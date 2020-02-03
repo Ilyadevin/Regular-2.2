@@ -18,6 +18,7 @@ result = []
 def regex():
     for index in contacts_list:
         for text in index:
+            counter = 0
             pattern_phone = re.compile(r'\+7|8\s|(495)|[\s]\s|(913|983|748)\D*(\d+)\D*(\d{2})|\s(\d{4})')
             pattern_emails = re.compile(r'(\w*@\w*\.ru)')
             pattern_organization = re.compile(r'(Минфин|ФНС)')
@@ -25,15 +26,17 @@ def regex():
             pattern_position = re.compile(
                 r'(главный специалист – эксперт отдела взаимодействия с федеральными органами власти Управления налогообложения имущества и доходов физических лиц|cоветник отдела Интернет проектов Управления информационных технологий)')
             text_phone = pattern_phone.sub(r'+7 (\1)\2-\3-\4 доб.\5', text)
-            text_last_name = pattern_eployers.sub(r'\1', text)
-            text_fist_name = pattern_eployers.sub(r'\2', text)
-            text_surname_name = pattern_eployers.sub(r'\3', text)
-            text_organization = pattern_organization.sub(r'\1', text)
-            text_emails = pattern_emails.sub(r'1', text)
-            text_position = pattern_position.sub(r'\1', text)
-            result.append(
-                [text_last_name, text_fist_name, text_surname_name, text_organization, text_position, text_phone,
-                 text_emails])
+            text_last_name = pattern_eployers.sub(r'\1' r'\2' r'\3', text)
+            if text_last_name in result:
+                counter += 1
+                pass
+            else:
+                text_organization = pattern_organization.sub(r'\1', text)
+                text_emails = pattern_emails.sub(r'1', text)
+                text_position = pattern_position.sub(r'\1', text)
+                result.append(
+                    [text_last_name.split(' '), text_organization, text_position, text_phone,
+                     text_emails])
 
 
 regex()
